@@ -15,14 +15,16 @@ if [ "${what}" = "cluster" ]; then
   echo 'source <(kubectl completion bash)' >>~/.bashrc
   echo 'alias k=kubectl' >>~/.bashrc
   echo 'complete -F __start_kubectl k' >>~/.bashrc
+  source ~/.bashrc
+  sleep 5
   echo "cluster installed !"
   kubectl get nodes
 fi
 
 
 if [ "${what}" = "app" ]; then
-  k -n $appnamespace create deployment sample --image=abdennour/sample-app:v1 --port 80
-  k -n $appnamespace expose deployment sample
+  kubectl -n $appnamespace create deployment sample --image=abdennour/sample-app:v1 --port 80
+  kubectl -n $appnamespace expose deployment sample
   kubectl -n $appnamespace apply -f - <<EOF
 apiVersion: networking.k8s.io/v1
 kind: Ingress
