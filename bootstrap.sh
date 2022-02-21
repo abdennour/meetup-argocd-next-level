@@ -25,7 +25,7 @@ fi
 if [ "${what}" = "app" ]; then
   kubectl create ns $appnamespace --dry-run=client -o yaml | kubectl apply -f-
   kubectl -n $appnamespace create deployment sample --image=abdennour/sample-app:v1 --port 80  --dry-run=client -o yaml | kubectl apply -f-
-  kubectl -n $appnamespace expose deployment sample --dry-run=client -o yaml | kubectl apply -f-
+  kubectl -n $appnamespace expose deployment sample   --dry-run=client -o yaml | kubectl apply -f-
   kubectl -n $appnamespace apply -f - <<EOF
 apiVersion: networking.k8s.io/v1
 kind: Ingress
