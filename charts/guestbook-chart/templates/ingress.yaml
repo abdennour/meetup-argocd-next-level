@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "guestbook-chart.fullname" . }}
+  labels:
+    {{- include "guestbook-chart.labels" . | nindent 4 }}
+spec:
+  rules:
+  - host: "{{ .host }}"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: {{ include "guestbook-chart.fullname" . }}
+            port:
+              number: 80

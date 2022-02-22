@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ NAME }}
+  namespace: argocd
+spec:
+  destination:
+    namespace: {{ DEST_NAMESPACE }}
+    server: https://kubernetes.default.svc # {{ CLUSTER }}
+  project: default
+  source:
+    path: {{ RELATIVE_PATH }}
+    repoURL: https://{{ GIT_REPO }}.git
+    targetRevision: HEAD # {{ BRANCH_COMMIT }}
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "guestbook-chart.fullname" . }}
+  labels:
+    {{- include "guestbook-chart.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "guestbook-chart.selectorLabels" . | nindent 6 }}
+  template:
+      labels:
+        {{- include "guestbook-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - image: gcr.io/heptio-images/ks-guestbook-demo:0.2
+        name: guestbook-ui
+        ports:
+        - containerPort: 80

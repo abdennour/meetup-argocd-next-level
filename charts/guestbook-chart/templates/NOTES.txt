@@ -1,0 +1,1 @@
+Your app has {{ .replicaCounnt }} replicas, and served at http://{{ .host }}

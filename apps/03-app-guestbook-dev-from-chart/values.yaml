@@ -1,0 +1,3 @@
+guestbook-chart:
+  replicaCount: 1
+  host: guetbook3-dev.labs.k8s.tn
