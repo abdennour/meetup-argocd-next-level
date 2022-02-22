@@ -1,0 +1,22 @@
+kind: Application
+metadata:
+  name: guestbook-prod
+  namespace: argocd
+spec:
+  destination:
+    namespace: guestbook-prod
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    directory:
+      jsonnet:
+        tlas:
+        - name: ""
+          value: ""
+    path: apps/02-app-guestbook-prod
+    repoURL: https://github.com/abdennour/meetup-argocd-next-level.git
+    targetRevision: HEAD
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true
