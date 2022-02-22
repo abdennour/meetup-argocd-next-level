@@ -1,0 +1,8 @@
+#!/bin/sh
+## @author abdennour
+
+helm repo add argo https://argoproj.github.io/argo-helm
+
+helm -n argocd upgrade argocd argo/argo-cd --install --create-namespace \
+  --version 3.33.6 \
+  $@

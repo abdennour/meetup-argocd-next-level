@@ -7,6 +7,16 @@ what=${1:-"cluster"};
 apphost=${2:-"sample.k8s.tn"};
 appnamespace=sample
 
+function install_helm()
+{
+  echo " > installing helm ..."
+  curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+  chmod 700 get_helm.sh
+  ./get_helm.sh
+  kubectl config view --raw >~/.kube/config
+  echo " > helm installed !"
+}
+
 if [ "${what}" = "cluster" ]; then
   echo installing lightweight k8s...
   curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644
@@ -19,6 +29,9 @@ if [ "${what}" = "cluster" ]; then
   sleep 5
   echo "cluster installed !"
   kubectl get nodes
+
+  echo "INSTALL other utils"
+  install_helm
 fi
 
 

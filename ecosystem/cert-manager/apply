@@ -1,0 +1,27 @@
+#!/bin/sh
+kubectl apply -f \
+https://github.com/cert-manager/cert-manager/releases/download/v1.7.1/cert-manager.yaml
+
+
+kubectl apply -f - <<EOF
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: mail@kubernetes.tn
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    # Enable the HTTP-01 challenge provider
+    solvers:
+    - http01:
+        ingress:
+          class: traefik
+EOF
+
+echo "HINT Add annotation 'cert-manager.io/cluster-issuer: letsencrypt-prod' to your Ingress resources "

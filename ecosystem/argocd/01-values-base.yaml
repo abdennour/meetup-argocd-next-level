@@ -1,0 +1,12 @@
+server:
+  extraArgs:
+  - --insecure
+  ingress:
+    enabled: true
+    hosts:
+      - argocd.labs.k8s.tn
+configs:
+  secret:
+    # `ARGO_PASS=YourArgoCDPass123`
+    # `htpasswd -nbBC 10 "" $ARGO_PASS | tr -d ':\n' | sed 's/$2y/$2a/'`
+    argocdServerAdminPassword: $2a$10$LqZQlmaNXPXuJdF5a5LqFex5iCg.WVYJddDccyfKxG9sDIx94ScOK
