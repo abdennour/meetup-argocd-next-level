@@ -1,0 +1,6 @@
+dependencies:
+- name: guestbook-chart
+  repository: file://../../charts/guestbook-chart
+  version: 0.1.0
+digest: sha256:d7bd2530bfe370d912ff1b86d5fbe9bc1686b0d8302fa7fc32450d8a92d3ba11
+generated: "2022-02-22T18:45:29.7816+03:00"
