@@ -5,10 +5,12 @@ metadata:
   labels:
     {{- include "guestbook-chart.labels" . | nindent 4 }}
 spec:
+  replicas: {{ .replicaCount }}
   selector:
     matchLabels:
       {{- include "guestbook-chart.selectorLabels" . | nindent 6 }}
   template:
+    metadata:
       labels:
         {{- include "guestbook-chart.selectorLabels" . | nindent 8 }}
     spec:
@@ -16,4 +18,5 @@ spec:
       - image: gcr.io/heptio-images/ks-guestbook-demo:0.2
         name: guestbook-ui
         ports:
-        - containerPort: 80
+          - containerPort: 80
+
