@@ -1,0 +1,33 @@
+repositories:
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+helmDefaults:
+  tillerless: true
+  verify: false
+  wait: true
+  timeout: 200
+ # recreatePods: false
+  # force: true
+environments:
+  default:
+    missingFileHandler: Warn
+    values:
+    - ../.environments/default.yaml
+  prod:
+    missingFileHandler: Warn
+    values:
+    - ../.environments/prod.yaml
+releases:
+- name: keycloak-db
+  namespace: auth
+  chart: bitnami/postgresql
+  version: 9.4.0
+  values:
+  - db/values.yaml.gotmpl
+
+- name: keycloak
+  namespace: auth
+  chart: bitnami/keycloak
+  version: 1.1.5
+  values:
+    - './values.yaml.gotmpl'

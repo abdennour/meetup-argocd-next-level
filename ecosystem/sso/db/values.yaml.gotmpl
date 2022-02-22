@@ -1,0 +1,96 @@
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
+##
+# global:
+#   storageClass: aws-efs
+
+volumePermissions:
+  enabled: false
+
+replication:
+  enabled: false
+
+## PostgreSQL admin password (used when `postgresqlUsername` is not `postgres`)
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#creating-a-database-user-on-first-run (see note!)
+postgresqlPostgresPassword: {{ .Environment.Values.keycloak.dbPass }}
+
+## PostgreSQL user (has superuser privileges if username is `postgres`)
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
+postgresqlUsername: {{ .Environment.Values.keycloak.dbUser }}
+
+## PostgreSQL password
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
+##
+postgresqlPassword: {{ .Environment.Values.keycloak.dbPass }}
+
+## Create a database
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#creating-a-database-on-first-run
+##
+postgresqlDatabase: {{ .Environment.Values.keycloak.dbName }}
+
+## PostgreSQL service configuration
+service:
+  type: ClusterIP
+  port: 5432
+
+persistence:
+  enabled: true
+  mountPath: /bitnami/postgresql
+  accessModes:
+    - ReadWriteOnce
+  size: 20Gi
+  # annotations: {}
+
+metrics:
+  enabled: false
+  # resources: {}
+  service:
+    type: ClusterIP
+    annotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/port: '9187'
+    loadBalancerIP:
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
+  ## Custom PrometheusRule to be defined
+  ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
+  ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
+  prometheusRule:
+    enabled: false
+    additionalLabels: {}
+    namespace: ''
+    rules: []
+
+  # image:
+  #   registry: docker.io
+  #   repository: bitnami/postgres-exporter
+  #   tag: 0.8.0-debian-10-r188
+  #   pullPolicy: IfNotPresent
+   
+  extraEnvVars: {}
+
+  securityContext:
+    enabled: false
+    runAsUser: 1001
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  ## Configure extra options for liveness and readiness probes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1

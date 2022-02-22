@@ -1,0 +1,41 @@
+server:
+  config:
+    # https://github.com/argoproj/argo-cd/blob/master/docs/user-guide/config-management-plugins.md#plugins
+
+    configManagementPlugins: |
+      - name: helmfile
+        init:
+          command: ["/bin/sh", "-c"]
+          args:
+          - >-
+            helmfile --state-values-set ns=$ARGOCD_APP_NAMESPACE template --skip-deps
+            | sed -e '/WARNING: This chart is deprecated/d'
+            | sed -e 's|apiregistration.k8s.io/v1beta1|apiregistration.k8s.io/v1|g' > all_.yaml
+        generate:
+          command: ["/bin/sh", "-c"]
+          args: [cat all_.yaml]
+
+repoServer:
+  volumes:
+  - name: custom-tools
+    emptyDir: {}
+  volumeMounts:
+  - mountPath: /usr/local/bin/helmfile
+    name: custom-tools
+    subPath: helmfile
+  initContainers:
+  - name: download-tools
+    image: abdennour/curl-zip:alpine-3.13
+    command: [sh, -c]
+    # lts: https://gist.githubusercontent.com/abdennour/36618a85f56a10126286ae5b287eb0ed/raw/092a93a698771754ac0e36091cdcf3504b85d6f6/argocd-plugin-helm-vault.sh
+    args:
+      - >-
+        curl -SsL -o /custom-tools/helmfile https://github.com/roboll/helmfile/releases/download/v0.138.2/helmfile_linux_amd64
+        && curl -SsL -o /tmp/vault.zip https://releases.hashicorp.com/vault/1.5.0/vault_1.5.0_linux_amd64.zip
+        && unzip /tmp/vault.zip -d /custom-tools/
+        && curl -SsL -o /custom-tools/argocd-plugin-helmfile-vault https://gist.githubusercontent.com/abdennour/36618a85f56a10126286ae5b287eb0ed/raw/c61fbc43cf609493afa762d02574611514d8f8b0/argocd-plugin-helmfile-vault.sh
+        && curl -SsL -o /custom-tools/argocd-plugin-helm-vault https://gist.githubusercontent.com/abdennour/42ab49d659a44463953406a88efa27bf/raw/fa2764a117ac514182f762bf1e7629ba2a7773e7/argocd-plugin-helm-vault
+        && chmod +x /custom-tools/*
+    volumeMounts:
+      - mountPath: /custom-tools
+        name: custom-tools

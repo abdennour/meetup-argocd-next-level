@@ -1,0 +1,63 @@
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
+##
+# global:
+#   storageClass: aws-efs
+
+
+# it's env var KEYCLOAK_EXTRA_ARGS
+# ref: https://github.com/bitnami/bitnami-docker-keycloak
+extraStartupArgs : "-Dkeycloak.frontendUrl=https://sso.labs.k8s.tn/auth"
+
+proxyAddressForwarding: true
+auth:
+  adminPassword: {{ .Environment.Values.keycloak.adminPass }}
+  managementPassword: {{ .Environment.Values.keycloak.managementPass }}
+#########
+## svc ##
+#########
+service:
+  type: ClusterIP
+#######################
+## DNS configuration ##
+#######################
+ingress:
+  ## Set to true to enable ingress record generation
+  enabled: true
+  certManager: false
+  hostname: sso.labs.k8s.tn
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($http_x_forwarded_proto = 'http') {
+        return 301 https://$host$request_uri;
+      }
+    # nginx.ingress.kubernetes.io/configuration-snippet: |
+    #   proxy_set_header X-Forwarded-Proto "https";
+    #       proxy_set_header X-Forwarded-For "$remote_addr, $server_addr";
+    # cert-manager.io/cluster-issuer: vault-issuer
+  tls: false
+
+######################
+## DB configuration ##
+######################
+postgresql:
+  enabled: false
+externalDatabase:
+  ## Database host
+  ##
+  host: keycloak-db-postgresql.auth
+  ## Database port
+  ##
+  port: 5432
+  ## non admin username for Keycloak Database
+  ##
+  user: {{ .Environment.Values.keycloak.dbUser }}
+  ## Database password
+  ##
+  password: {{ .Environment.Values.keycloak.dbPass }}
+  ## Database name
+  ##
+  database: {{ .Environment.Values.keycloak.dbName }}

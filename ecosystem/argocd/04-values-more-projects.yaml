@@ -1,0 +1,13 @@
+server:
+  additionalProjects:
+    - name: project1 ## !!
+      namespace: argocd
+      additionalLabels:
+        k8s.tn/owner: gitops
+      additionalAnnotations: {}
+      description: My Project 1
+      sourceRepos:
+      - namespace: myproject1-dev ## !!
+        server: https://kubernetes.default.svc
+      - namespace: myproject1-prod ## !!
+        server: https://kubernetes.default.svc

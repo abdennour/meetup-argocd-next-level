@@ -1,0 +1,20 @@
+server:
+  # config= argocd-cm configmap
+  config:
+    oidc.config: |
+      name: k8s tn SSO
+      issuer: https://sso.labs.k8s.tn/auth/realms/internal
+      clientID: argocd
+      clientSecret: $KEYCLOAK_CLIENT_SECRET
+      requestedScopes: ["openid", "profile", "email"]
+      requestedIDTokenClaims:
+        groups:
+          essential: true
+  rbacConfig:
+    # policy.csv:
+    scopes: '[groups, email]'
+
+configs:
+  secret:
+    extra:
+      KEYCLOAK_CLIENT_SECRET: {{ .Environment.Values.argocd.keycloak.clientSecret }}

@@ -1,0 +1,10 @@
+server:
+  rbacConfig:
+    # policy.default: role:readonly
+    policy.csv: |
+      p, role:prod-role, applications, get, */*, allow
+      p, role:prod-role, applications, sync, */*-prod, allow
+      p, role:prod-role, projects, get, *, allow
+      g, prod-team, role:prod-role
+
+# p, role:prod-role, clusters, get, *, allow
