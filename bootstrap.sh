@@ -32,8 +32,13 @@ if [ "${what}" = "cluster" ]; then
    
   echo "INSTALL other utils"
   install_helm
-  echo " Multi-Node k3s? If you gonna other nodes, run the following cmds in other nodes to let them join this cluster";echo "------";
-  echo "curl -sfL https://get.k3s.io | K3S_URL=https://$(hostname -i):6443 K3S_TOKEN=$(</var/lib/rancher/k3s/server/node-token) sh -"
+   
+  echo " Multi-Node k3s? If you gonna other nodes, Copy the script k3s-node-join.sh to your node & exec it";echo "------";
+  cat >> k3s-node-join.sh <<EOF
+ curl -sfL https://get.k3s.io | K3S_URL=https://$(hostname -i):6443 K3S_TOKEN=$(</var/lib/rancher/k3s/server/node-token) sh -
+ systemctl enable --now k3s-agent
+EOF
+  echo ""
 
 fi
 
