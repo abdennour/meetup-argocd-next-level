@@ -29,9 +29,12 @@ if [ "${what}" = "cluster" ]; then
   sleep 5
   echo "cluster installed !"
   kubectl get nodes
-
+   
   echo "INSTALL other utils"
   install_helm
+  echo " Multi-Node k3s? If you gonna other nodes, run the following cmds in other nodes to let them join this cluster";echo "------";
+  echo "curl -sfL https://get.k3s.io | K3S_URL=https://$(hostname -i):6443 K3S_TOKEN=$(</var/lib/rancher/k3s/server/node-token) sh -"
+
 fi
 
 
