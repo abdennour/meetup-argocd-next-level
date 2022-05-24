@@ -30,9 +30,10 @@ if [ "${what}" = "cluster" ]; then
   echo "cluster installed !"
   kubectl get nodes
    
-  echo "INSTALL other utils"
+  echo "INSTALL other utils (helm,arkade)"
   install_helm
-   
+  curl -sLS https://get.arkade.dev | sudo sh
+
   echo " Multi-Node k3s? If you gonna other nodes, Copy the script k3s-node-join.sh to your node & exec it";echo "------";
   cat >> k3s-node-join.sh <<EOF
  curl -sfL https://get.k3s.io | K3S_URL=https://$(hostname -i):6443 K3S_TOKEN=$(</var/lib/rancher/k3s/server/node-token) sh -
