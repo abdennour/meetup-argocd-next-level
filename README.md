@@ -10,3 +10,6 @@
 
 - cert-manager : `sh ecosystem/cert-manager/apply`
 - argocd `ecosystem/argocd/helm_apply -f 01-values.yaml`
+
+# License
+LGPL v3
